@@ -13,7 +13,7 @@
     "client": "node dist/client.js",
     "demo": "node dist/demo.js",
     "test:showcase": "node test-showcase.js",
-    "real-demo": "node dist/realDemo.js",
+    "real-demo": "node dist/realBlockchainDemo.js",
     "real-blockchain-demo": "node dist/realBlockchainDemo.js",
     "mock-blockchain-demo": "node dist/mockBlockchainDemo.js",
     "facilitator": "node dist/server/simpleFacilitator.js",
@@ -21,7 +21,9 @@
     "full-real-blockchain-demo": "npm run facilitator & npm run server & sleep 5 && npm run real-blockchain-demo",
     "full-mock-blockchain-demo": "npm run facilitator & npm run server & sleep 5 && npm run mock-blockchain-demo",
     "mainnet-demo": "NETWORK=mainnet npm run facilitator & NETWORK=mainnet npm run server & sleep 5 && NETWORK=mainnet npm run real-blockchain-demo",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "auto-refill": "node auto-refill-daemon.js",
+    "auto-refill-mainnet": "NETWORK=mainnet node auto-refill-daemon.js"
   },
   "keywords": [
     "xapt",
