@@ -1,13 +1,13 @@
 import { AptosX402Client } from '@xapt/client';
 import { SmartWalletAdapter } from '../wallet/smartWalletAdapter';
-import { RealAptosWalletAdapter } from '../wallet/realAptosWalletAdapter';
+import { MockAptosWalletAdapter } from '../wallet/mockAptosWalletAdapter';
 import { SmartWalletConfig } from '../types/wallet';
 
 /**
- * REAL Blockchain Demo Client using actual Aptos testnet wallets
- * This will make REAL transactions on the blockchain with APT tokens
+ * MOCK Blockchain Demo Client for testing when nodes are not synced
+ * This simulates real transactions without requiring actual blockchain access
  */
-export class RealBlockchainDemoClient {
+export class MockBlockchainDemoClient {
   private smartWallet: SmartWalletAdapter;
   private client: AptosX402Client;
   private serverUrl: string;
@@ -15,21 +15,9 @@ export class RealBlockchainDemoClient {
   constructor(serverUrl: string = 'http://localhost:3000') {
     this.serverUrl = serverUrl;
 
-    // Multiple RPC endpoints for better reliability
-    const rpcEndpoints = [
-      'https://rpc.ankr.com/premium-http/aptos_testnet/4890dc2102996a92003e9575fc4bfb6fd49d02a8e625f91642f56fbcf2569b93/v1',
-      'https://fullnode.testnet.aptoslabs.com',
-      'https://testnet.aptoslabs.com',
-      'https://aptos-testnet.public.blastapi.io'
-    ];
-    
-    // Use the first endpoint, with fallback capability
-    const nodeUrl = rpcEndpoints[0];
-    console.log(`🔗 Using RPC endpoint: ${nodeUrl}`);
-    
-    // Update spending wallet to new address and private key
-    const spendingWallet = new RealAptosWalletAdapter('ed25519-priv-0xb0ec4fc12941372399877c07f500d74cb0fe48154ac54bbfabe566a75d7128c7', nodeUrl);
-    const savingWallet = new RealAptosWalletAdapter('ed25519-priv-0x62645f59c6ae6f285eb76bf0ebfb8b089df58402e8af78dec4d30114cdccf504', nodeUrl);
+    // Create mock wallet adapters with simulated balances
+    const spendingWallet = new MockAptosWalletAdapter('0x54aac012a65ed3aae7c829877ac604a9f579aebee87818e4eb5d8e6220fdb93d', 2.5); // 2.5 APT
+    const savingWallet = new MockAptosWalletAdapter('0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17', 10.0); // 10 APT
 
     // Configure smart wallet
     const config: SmartWalletConfig = {
@@ -47,18 +35,18 @@ export class RealBlockchainDemoClient {
   }
 
   /**
-   * Initialize the real blockchain demo client
+   * Initialize the mock blockchain demo client
    */
   async initialize(): Promise<void> {
-    console.log('🚀 Initializing xAPT REAL Blockchain Demo Client...');
-    console.log('🔗 This will make REAL transactions on Aptos testnet!');
-    console.log('⚠️  WARNING: This will use real APT from your wallets!');
+    console.log('🚀 Initializing xAPT MOCK Blockchain Demo Client...');
+    console.log('🔗 This simulates REAL transactions on Aptos testnet!');
+    console.log('⚠️  WARNING: This uses MOCK wallets with simulated balances!');
     
     try {
       await this.smartWallet.connect();
-      console.log('✅ Real blockchain smart wallet connected successfully');
+      console.log('✅ Mock blockchain smart wallet connected successfully');
       
-      // Display real balances
+      // Display mock balances
       await this.displayBalances();
       
     } catch (error) {
@@ -68,7 +56,7 @@ export class RealBlockchainDemoClient {
   }
 
   /**
-   * Display current wallet balances from blockchain
+   * Display current wallet balances
    */
   async displayBalances(): Promise<void> {
     try {
@@ -76,7 +64,7 @@ export class RealBlockchainDemoClient {
       const savingBalance = await this.smartWallet.getSavingBalance();
       const dailyStats = this.smartWallet.getDailyRefillStats();
 
-      console.log('\n💰 REAL Blockchain Wallet Balances:');
+      console.log('\n💰 MOCK Blockchain Wallet Balances:');
       console.log(`   Spending Wallet: ${spendingBalance.balance} APT`);
       console.log(`   Spending Address: ${spendingBalance.address}`);
       console.log(`   Saving Wallet: ${savingBalance.balance} APT`);
@@ -84,13 +72,6 @@ export class RealBlockchainDemoClient {
       console.log(`   Daily Refills: ${dailyStats.count}/${this.smartWallet.getConfig().maxRefillsPerDay}`);
       console.log(`   Daily Refill Amount: ${dailyStats.amount}/${this.smartWallet.getConfig().maxDailyRefillAmount} APT`);
       
-      // Check if wallets have sufficient balance
-      if (spendingBalance.balance < 0.5) {
-        console.log('⚠️  WARNING: Spending wallet has low balance!');
-      }
-      if (savingBalance.balance < 2) {
-        console.log('⚠️  WARNING: Saving wallet has low balance!');
-      }
     } catch (error) {
       console.error('❌ Failed to get balances:', error);
     }
@@ -119,11 +100,11 @@ export class RealBlockchainDemoClient {
   }
 
   /**
-   * Test premium endpoints with REAL blockchain payments
+   * Test premium endpoints with MOCK blockchain payments
    */
   async testPremiumEndpoints(): Promise<void> {
-    console.log('\n💎 Testing Premium Endpoints with REAL blockchain payments...');
-    console.log('⚠️  This will make REAL APT transfers!');
+    console.log('\n💎 Testing Premium Endpoints with MOCK blockchain payments...');
+    console.log('⚠️  This simulates REAL APT transfers!');
     
     try {
       // Test premium data endpoint
@@ -157,11 +138,11 @@ export class RealBlockchainDemoClient {
   }
 
   /**
-   * Test enterprise endpoint with REAL blockchain payment
+   * Test enterprise endpoint with MOCK blockchain payment
    */
   async testEnterpriseEndpoint(): Promise<void> {
-    console.log('\n🏢 Testing Enterprise Endpoint with REAL blockchain payment...');
-    console.log('⚠️  This will make a REAL 0.5 APT transfer!');
+    console.log('\n🏢 Testing Enterprise Endpoint with MOCK blockchain payment...');
+    console.log('⚠️  This simulates a REAL 0.5 APT transfer!');
     
     try {
       console.log('📈 Accessing enterprise insights...');
@@ -176,11 +157,11 @@ export class RealBlockchainDemoClient {
   }
 
   /**
-   * Test subscription endpoint with REAL blockchain payment
+   * Test subscription endpoint with MOCK blockchain payment
    */
   async testSubscriptionEndpoint(): Promise<void> {
-    console.log('\n📡 Testing Subscription Endpoint with REAL blockchain payment...');
-    console.log('⚠️  This will make a REAL APT transfer!');
+    console.log('\n📡 Testing Subscription Endpoint with MOCK blockchain payment...');
+    console.log('⚠️  This simulates a REAL APT transfer!');
     
     try {
       console.log('🔄 Accessing real-time subscription feed...');
@@ -195,11 +176,11 @@ export class RealBlockchainDemoClient {
   }
 
   /**
-   * Simulate low balance scenario with REAL blockchain transactions
+   * Simulate low balance scenario with MOCK blockchain transactions
    */
   async simulateLowBalance(): Promise<void> {
-    console.log('\n⚠️  Simulating Low Balance Scenario with REAL blockchain...');
-    console.log('⚠️  This will trigger REAL auto-refill from savings!');
+    console.log('\n⚠️  Simulating Low Balance Scenario with MOCK blockchain...');
+    console.log('⚠️  This will trigger MOCK auto-refill from savings!');
     
     try {
       // Temporarily set low balance threshold to trigger auto-refill
@@ -211,10 +192,10 @@ export class RealBlockchainDemoClient {
 
       console.log('💰 Current spending balance is low, auto-refill should trigger...');
       
-      // Try to make a payment (this should trigger auto-refill)
+      // Try to make a payment that will trigger auto-refill
       const response = await this.client.fetchWithPayment(`${this.serverUrl}/api/premium/data`);
       const data = await response.json();
-      console.log('✅ Payment successful after auto-refill:', data.message);
+      console.log('✅ Low balance simulation successful:', data.message);
 
       // Restore original config
       this.smartWallet.updateConfig(originalConfig);
@@ -225,67 +206,38 @@ export class RealBlockchainDemoClient {
   }
 
   /**
-   * Display smart wallet statistics with real blockchain data
+   * Display smart wallet statistics
    */
   async displayStatistics(): Promise<void> {
-    console.log('\n📊 REAL Blockchain Smart Wallet Statistics:');
+    console.log('\n📊 MOCK Blockchain Smart Wallet Statistics:');
     
-    try {
-      const autoRefillEvents = this.smartWallet.getAutoRefillEvents();
-      const transferHistory = this.smartWallet.getTransferHistory();
-      const dailyStats = this.smartWallet.getDailyRefillStats();
-      const config = this.smartWallet.getConfig();
+    const autoRefillEvents = this.smartWallet.getAutoRefillEvents();
+    const transferHistory = this.smartWallet.getTransferHistory();
+    const dailyStats = this.smartWallet.getDailyRefillStats();
+    const config = this.smartWallet.getConfig();
 
-      console.log(`   Auto-refill Events: ${autoRefillEvents.length}`);
-      console.log(`   Transfer History: ${transferHistory.length}`);
-      console.log(`   Daily Refills: ${dailyStats.count}/${config.maxRefillsPerDay}`);
-      console.log(`   Daily Refill Amount: ${dailyStats.amount}/${config.maxDailyRefillAmount} APT`);
-      console.log(`   Auto-refill Enabled: ${config.enableAutoRefill}`);
-      console.log(`   Low Balance Threshold: ${config.lowBalanceThreshold} APT`);
-      console.log(`   Auto-refill Amount: ${config.autoRefillAmount} APT`);
+    console.log(`   Auto-refill Events: ${autoRefillEvents.length}`);
+    console.log(`   Transfer History: ${transferHistory.length}`);
+    console.log(`   Daily Refills: ${dailyStats.count}/${config.maxRefillsPerDay}`);
+    console.log(`   Daily Refill Amount: ${dailyStats.amount}/${config.maxDailyRefillAmount} APT`);
+    console.log(`   Auto-refill Enabled: ${config.enableAutoRefill}`);
+    console.log(`   Low Balance Threshold: ${config.lowBalanceThreshold} APT`);
+    console.log(`   Auto-refill Amount: ${config.autoRefillAmount} APT`);
 
-      if (autoRefillEvents.length > 0) {
-        console.log('\n   Recent Auto-refill Events:');
-        autoRefillEvents.slice(-3).forEach((event, index) => {
-          console.log(`     ${index + 1}. ${event.amount} APT - ${event.reason} - ${event.success ? '✅' : '❌'}`);
-          if (event.transactionHash) {
-            console.log(`        Transaction: https://explorer.aptoslabs.com/txn/${event.transactionHash}?network=testnet`);
-          }
-        });
-      }
-
-      if (transferHistory.length > 0) {
-        console.log('\n   Recent Transfer History:');
-        transferHistory.slice(-3).forEach((tx, index) => {
-          console.log(`     ${index + 1}. ${tx.amount} APT from ${tx.from} to ${tx.to}`);
-          console.log(`        Transaction: https://explorer.aptoslabs.com/txn/${tx.transactionHash}?network=testnet`);
-        });
-      }
-
-    } catch (error) {
-      console.error('❌ Failed to get statistics:', error);
+    if (autoRefillEvents.length > 0) {
+      console.log('\n   Recent Auto-refill Events:');
+      autoRefillEvents.slice(-3).forEach((event, index) => {
+        const status = event.success ? '✅' : '❌';
+        console.log(`     ${index + 1}. ${event.amount} APT - ${event.reason} - ${status}`);
+      });
     }
   }
 
   /**
-   * Run complete real blockchain demo
+   * Run the complete mock blockchain demo
    */
   async runDemo(): Promise<void> {
-    console.log('🎯 Starting xAPT REAL Blockchain Demo...');
-    console.log('==========================================\n');
-    
-    console.log('💡 This demo uses REAL Aptos testnet wallets:');
-    console.log('   • Spending Wallet: 0x7cf9db286bac18834b20bb31b34809fe308ac7c8f683e5daa0dfca434e5d8f74');
-    console.log('   • Saving Wallet: 0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17');
-    console.log('   • Network: Aptos Testnet');
-    console.log('   • Token: APT (Testnet)');
-    console.log('');
-    console.log('⚠️  WARNING: This will make REAL blockchain transactions!');
-    console.log('⚠️  WARNING: Real APT will be transferred between your wallets!');
-    console.log('');
-
     try {
-      // Initialize
       await this.initialize();
       
       // Test all endpoints
@@ -294,29 +246,26 @@ export class RealBlockchainDemoClient {
       await this.testEnterpriseEndpoint();
       await this.testSubscriptionEndpoint();
       
-      // Simulate low balance
+      // Test smart wallet features
       await this.simulateLowBalance();
       
-      // Display final statistics
+      // Display statistics
       await this.displayStatistics();
       
-      console.log('\n🎉 REAL Blockchain Demo completed successfully!');
+      console.log('\n🎉 MOCK Blockchain Demo completed successfully!');
       console.log('💡 Key Features Demonstrated:');
-      console.log('   • REAL HTTP 402 Payment Required handling');
-      console.log('   • REAL Automatic wallet refill from savings');
-      console.log('   • REAL Smart balance monitoring');
-      console.log('   • REAL Transaction history tracking');
-      console.log('   • REAL Daily refill limits');
-      console.log('   • REAL Payment processing on Aptos testnet');
-      console.log('');
-      console.log('🔗 View transactions on Aptos Explorer:');
-      console.log('   https://explorer.aptoslabs.com/?network=testnet');
+      console.log('   • MOCK HTTP 402 Payment Required handling');
+      console.log('   • MOCK Automatic wallet refill from savings');
+      console.log('   • MOCK Smart balance monitoring');
+      console.log('   • MOCK Transaction history tracking');
+      console.log('   • MOCK Daily refill limits');
+      console.log('   • MOCK Payment processing simulation');
       
     } catch (error) {
-      console.error('❌ Demo failed:', error);
+      console.error('❌ Mock blockchain demo failed:', error);
     } finally {
       await this.smartWallet.disconnect();
-      console.log('\n🔌 Real blockchain smart wallet disconnected');
+      console.log('\n🔌 Mock blockchain smart wallet disconnected');
     }
   }
 } 

@@ -112,23 +112,36 @@ export class RealAptosWalletAdapter implements IWalletAdapter {
   }
 
   async getRealBalance(): Promise<string> {
-    try {
-      // Query real APT balance from Aptos testnet
-      const response = await fetch(`${this.nodeUrl}/v1/accounts/${this.address}/resource/0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>`);
-      
-      if (response.ok) {
-        const data = await response.json();
-        const balance = data.data.coin.value;
-        console.log(`💰 REAL balance from blockchain: ${balance} raw units (${parseInt(balance) / Math.pow(10, 8)} APT)`);
-        return balance;
-      } else {
-        console.log(`⚠️  No APT balance found for ${this.address}`);
-        return "0";
+    const rpcEndpoints = [
+      this.nodeUrl,
+      'https://fullnode.testnet.aptoslabs.com',
+      'https://testnet.aptoslabs.com',
+      'https://aptos-testnet.public.blastapi.io'
+    ];
+
+    for (const endpoint of rpcEndpoints) {
+      try {
+        console.log(`🔍 Trying RPC endpoint: ${endpoint}`);
+        
+        // Query real APT balance from Aptos testnet
+        const response = await fetch(`${endpoint}/v1/accounts/${this.address}/resource/0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          const balance = data.data.coin.value;
+          console.log(`💰 REAL balance from blockchain (${endpoint}): ${balance} raw units (${parseInt(balance) / Math.pow(10, 8)} APT)`);
+          return balance;
+        } else {
+          console.log(`⚠️  No APT balance found for ${this.address} on ${endpoint}`);
+        }
+      } catch (error) {
+        console.log(`❌ Error with ${endpoint}: ${error}`);
+        continue;
       }
-    } catch (error) {
-      console.error(`Error fetching balance: ${error}`);
-      return "0";
     }
+    
+    console.log(`⚠️  No APT balance found for ${this.address} on any RPC endpoint`);
+    return "0";
   }
 
   async getAccountSequenceNumber(): Promise<number> {
