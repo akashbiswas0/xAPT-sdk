@@ -142,7 +142,7 @@ export class SmartWalletAdapter implements IWalletAdapter {
 
     // Get real balance from the spending wallet adapter
     const balanceRaw = await (this.spendingWallet as any).getRealBalance();
-    const balance = parseFloat(balanceRaw) / Math.pow(10, 6);
+    const balance = parseFloat(balanceRaw) / Math.pow(10, 8); // APT has 8 decimals, not 6
 
     return {
       address,
@@ -163,7 +163,7 @@ export class SmartWalletAdapter implements IWalletAdapter {
 
     // Get real balance from the saving wallet adapter
     const balanceRaw = await (this.savingWallet as any).getRealBalance();
-    const balance = parseFloat(balanceRaw) / Math.pow(10, 6);
+    const balance = parseFloat(balanceRaw) / Math.pow(10, 8); // APT has 8 decimals, not 6
 
     return {
       address,

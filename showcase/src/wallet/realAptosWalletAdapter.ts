@@ -51,7 +51,8 @@ export class RealAptosWalletAdapter implements IWalletAdapter {
     
     // Get and display real balance
     try {
-      const balance = await this.getRealBalance();
+      const balanceRaw = await this.getRealBalance();
+      const balance = parseFloat(balanceRaw) / Math.pow(10, 8);
       console.log(`💰 REAL balance: ${balance} APT`);
     } catch (error) {
       console.log(`⚠️  Could not fetch balance: ${error}`);
