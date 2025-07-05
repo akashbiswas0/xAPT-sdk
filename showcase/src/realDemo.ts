@@ -16,7 +16,7 @@ async function main() {
   console.log('   • Spending: 0x7cf9db286bac18834b20bb31b34809fe308ac7c8f683e5daa0dfca434e5d8f74');
   console.log('   • Saving: 0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17');
   console.log('   • Network: Aptos Testnet');
-  console.log('   • Token: USDC (Testnet)');
+  console.log('   • Token: APT (Testnet)');
   console.log('');
 
   // Check if server URL is provided

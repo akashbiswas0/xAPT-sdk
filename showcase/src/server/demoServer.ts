@@ -10,31 +10,66 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Detect if running on mainnet
+const isMainnet = process.env.NETWORK === 'mainnet' || process.env.APTOS_NETWORK === 'mainnet';
+
+// Configure payment amounts based on network
+const getPaymentRules = () => {
+  if (isMainnet) {
+    // Mainnet configuration with very low amounts
+    return {
+      '/api/premium/data': {
+        amount: '0.002',
+        recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17',
+        description: 'Premium market data access (Mainnet)'
+      },
+      '/api/premium/analysis': {
+        amount: '0.002',
+        recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17',
+        description: 'Premium analysis service (Mainnet)'
+      },
+      '/api/premium/reports': {
+        amount: '0.002',
+        recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17',
+        description: 'Premium reports access (Mainnet)'
+      },
+      '/api/subscription/feed': {
+        amount: '0.002',
+        recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17',
+        description: 'Real-time subscription feed (Mainnet)'
+      }
+    };
+  } else {
+    // Testnet configuration with original amounts
+    return {
+      '/api/premium/data': {
+        amount: '0.1',
+        recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17', // Your saving wallet
+        description: 'Premium market data access (Testnet)'
+      },
+      '/api/premium/analysis': {
+        amount: '0.1',
+        recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17', // Your saving wallet
+        description: 'Premium analysis service (Testnet)'
+      },
+      '/api/premium/reports': {
+        amount: '0.1',
+        recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17', // Your saving wallet
+        description: 'Premium reports access (Testnet)'
+      },
+      '/api/subscription/feed': {
+        amount: '0.1',
+        recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17', // Your saving wallet
+        description: 'Real-time subscription feed (Testnet)'
+      }
+    };
+  }
+};
+
 // Configure xAPT payment middleware
 const paymentMiddleware = xaptPaymentMiddleware({
   facilitatorBaseUrl: 'http://localhost:3001', // Local facilitator service
-  paymentRules: {
-    '/api/premium/data': {
-      amount: '0.1',
-      recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17', // Your saving wallet
-      description: 'Premium market data access'
-    },
-    '/api/premium/analysis': {
-      amount: '0.1',
-      recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17', // Your saving wallet
-      description: 'Premium analysis service'
-    },
-    '/api/premium/reports': {
-      amount: '0.1',
-      recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17', // Your saving wallet
-      description: 'Premium reports access'
-    },
-    '/api/subscription/feed': {
-      amount: '0.1',
-      recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17', // Your saving wallet
-      description: 'Real-time subscription feed'
-    }
-  },
+  paymentRules: getPaymentRules(),
 });
 
 // Public endpoints (no payment required)
@@ -136,9 +171,9 @@ app.get('/api/enterprise/insights', (req, res) => {
     facilitatorBaseUrl: 'http://localhost:3001',
     paymentRules: {
       '/api/enterprise/insights': {
-        amount: '0.5',
+        amount: isMainnet ? '0.01' : '0.5',
         recipientAddress: '0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17', // Your saving wallet
-        description: 'Enterprise insights access'
+        description: `Enterprise insights access (${isMainnet ? 'Mainnet' : 'Testnet'})`
       }
     },
   });

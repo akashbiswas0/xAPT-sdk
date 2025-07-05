@@ -17,6 +17,9 @@ export class RealBlockchainDemoClient {
 
     // Multiple RPC endpoints for better reliability
     const rpcEndpoints = [
+      'https://aptos-testnet-rpc.publicnode.com/v1/',  // Primary endpoint
+      'https://api.testnet.aptoslabs.com/v1/',  // Official Aptos testnet API
+      'https://api.mainnet.aptoslabs.com/v1/',  // Official Aptos mainnet API
       'https://rpc.ankr.com/premium-http/aptos_testnet/4890dc2102996a92003e9575fc4bfb6fd49d02a8e625f91642f56fbcf2569b93/v1',
       'https://fullnode.testnet.aptoslabs.com',
       'https://testnet.aptoslabs.com',
@@ -31,14 +34,14 @@ export class RealBlockchainDemoClient {
     const spendingWallet = new RealAptosWalletAdapter('ed25519-priv-0xb0ec4fc12941372399877c07f500d74cb0fe48154ac54bbfabe566a75d7128c7', nodeUrl);
     const savingWallet = new RealAptosWalletAdapter('ed25519-priv-0x62645f59c6ae6f285eb76bf0ebfb8b089df58402e8af78dec4d30114cdccf504', nodeUrl);
 
-    // Configure smart wallet
+    // Configure smart wallet with automated balance management
     const config: SmartWalletConfig = {
-      lowBalanceThreshold: 0.2, // 0.2 APT
-      autoRefillAmount: 1.0,    // 1 APT
-      maxRefillsPerDay: 5,
-      maxDailyRefillAmount: 5.0, // 5 APT
-      enableAutoRefill: true,
-      enableNotifications: true
+      lowBalanceThreshold: 0.005, // Trigger auto-refill when balance drops below 0.005 APT
+      autoRefillAmount: 0.05,     // Transfer 0.05 APT to cover payments + fees
+      maxRefillsPerDay: 10,       // Allow up to 10 refills per day
+      maxDailyRefillAmount: 1.0,  // Maximum 1 APT total refills per day
+      enableAutoRefill: true,     // Enable automatic refills
+      enableNotifications: true   // Enable notifications
     };
 
     // Create smart wallet adapter
@@ -47,7 +50,7 @@ export class RealBlockchainDemoClient {
   }
 
   /**
-   * Initialize the real blockchain demo client
+   * Initialize the demo client
    */
   async initialize(): Promise<void> {
     console.log('🚀 Initializing xAPT REAL Blockchain Demo Client...');
@@ -55,14 +58,18 @@ export class RealBlockchainDemoClient {
     console.log('⚠️  WARNING: This will use real APT from your wallets!');
     
     try {
+      // Connect to the smart wallet
       await this.smartWallet.connect();
-      console.log('✅ Real blockchain smart wallet connected successfully');
       
-      // Display real balances
-      await this.displayBalances();
+      // Start automated balance monitoring
+      console.log('🔍 Starting automated balance monitoring...');
+      await this.smartWallet.startBalanceMonitoring(15000); // Check every 15 seconds
+      
+      console.log('✅ Demo client initialized successfully!');
+      console.log('🤖 Smart wallet will automatically maintain minimum balance of 0.005 APT');
       
     } catch (error) {
-      console.error('❌ Failed to initialize:', error);
+      console.error('❌ Failed to initialize demo client:', error);
       throw error;
     }
   }
@@ -161,7 +168,7 @@ export class RealBlockchainDemoClient {
    */
   async testEnterpriseEndpoint(): Promise<void> {
     console.log('\n🏢 Testing Enterprise Endpoint with REAL blockchain payment...');
-    console.log('⚠️  This will make a REAL 0.5 APT transfer!');
+    console.log('⚠️  This will make a REAL 0.05 APT transfer!');
     
     try {
       console.log('📈 Accessing enterprise insights...');
@@ -202,11 +209,13 @@ export class RealBlockchainDemoClient {
     console.log('⚠️  This will trigger REAL auto-refill from savings!');
     
     try {
+      // Detect mainnet from environment
+      const isMainnet = process.env.NETWORK === 'mainnet' || process.env.APTOS_NETWORK === 'mainnet';
       // Temporarily set low balance threshold to trigger auto-refill
       const originalConfig = this.smartWallet.getConfig();
       this.smartWallet.updateConfig({
-        lowBalanceThreshold: 0.5, // 0.5 APT
-        autoRefillAmount: 1.5     // 1.5 APT
+        lowBalanceThreshold: isMainnet ? 0.005 : 0.5, // 0.005 APT for mainnet, 0.5 for testnet
+        autoRefillAmount: isMainnet ? 0.01 : 1.5     // 0.01 APT for mainnet, 1.5 for testnet
       });
 
       console.log('💰 Current spending balance is low, auto-refill should trigger...');
@@ -268,6 +277,50 @@ export class RealBlockchainDemoClient {
   }
 
   /**
+   * Demonstrate automated balance management
+   */
+  async demonstrateAutoRefill(): Promise<void> {
+    console.log('\n🤖 Demonstrating Automated Balance Management...');
+    console.log('📊 Making multiple payments to show auto-refill in action...');
+    
+    try {
+      // Make several small payments to drain the spending wallet
+      const payments = [0.001, 0.002, 0.001, 0.003, 0.002];
+      
+      for (let i = 0; i < payments.length; i++) {
+        const amount = payments[i];
+        console.log(`\n💳 Payment ${i + 1}/${payments.length}: ${amount} APT`);
+        
+        try {
+          // Try to make a payment (this will trigger auto-refill if needed)
+          const response = await this.smartWallet.smartPayment(
+            `${this.serverUrl}/api/pay`,
+            amount.toString()
+          );
+          
+          if (response.ok) {
+            console.log(`✅ Payment ${i + 1} successful!`);
+          } else {
+            console.log(`❌ Payment ${i + 1} failed: ${response.status}`);
+          }
+          
+          // Wait a bit between payments to see auto-refill in action
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          
+        } catch (error) {
+          console.log(`❌ Payment ${i + 1} error: ${error}`);
+        }
+      }
+      
+      console.log('\n🎉 Automated balance management demonstration complete!');
+      console.log('📈 Check the logs above to see auto-refill in action');
+      
+    } catch (error) {
+      console.error('❌ Auto-refill demonstration failed:', error);
+    }
+  }
+
+  /**
    * Run complete real blockchain demo
    */
   async runDemo(): Promise<void> {
@@ -300,6 +353,9 @@ export class RealBlockchainDemoClient {
       // Display final statistics
       await this.displayStatistics();
       
+      // Demonstrate automated balance management
+      await this.demonstrateAutoRefill();
+      
       console.log('\n🎉 REAL Blockchain Demo completed successfully!');
       console.log('💡 Key Features Demonstrated:');
       console.log('   • REAL HTTP 402 Payment Required handling');
@@ -310,7 +366,8 @@ export class RealBlockchainDemoClient {
       console.log('   • REAL Payment processing on Aptos testnet');
       console.log('');
       console.log('🔗 View transactions on Aptos Explorer:');
-      console.log('   https://explorer.aptoslabs.com/?network=testnet');
+console.log('   Testnet: https://explorer.aptoslabs.com/?network=testnet');
+console.log('   Mainnet: https://explorer.aptoslabs.com/?network=mainnet');
       
     } catch (error) {
       console.error('❌ Demo failed:', error);

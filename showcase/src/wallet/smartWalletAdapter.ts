@@ -375,4 +375,67 @@ export class SmartWalletAdapter implements IWalletAdapter {
   getConfig(): SmartWalletConfig {
     return { ...this.config };
   }
+
+  /**
+   * Proactive balance monitoring - continuously check and maintain minimum balance
+   */
+  async startBalanceMonitoring(intervalMs: number = 30000): Promise<void> {
+    if (!this.config.enableAutoRefill) {
+      console.log('Auto-refill is disabled, skipping balance monitoring');
+      return;
+    }
+
+    console.log(`🔍 Starting proactive balance monitoring (checking every ${intervalMs/1000}s)...`);
+    
+    // Initial check
+    await this.checkAndMaintainBalance();
+    
+    // Set up periodic monitoring
+    setInterval(async () => {
+      try {
+        await this.checkAndMaintainBalance();
+      } catch (error) {
+        console.error('❌ Balance monitoring error:', error);
+      }
+    }, intervalMs);
+  }
+
+  /**
+   * Check current balance and maintain minimum threshold
+   */
+  private async checkAndMaintainBalance(): Promise<void> {
+    try {
+      const spendingBalance = await this.getSpendingBalance();
+      const savingBalance = await this.getSavingBalance();
+      
+      console.log(`💰 Spending balance: ${spendingBalance.balance.toFixed(6)} APT`);
+      console.log(`💰 Saving balance: ${savingBalance.balance.toFixed(6)} APT`);
+      
+      // Check if balance is below threshold
+      if (spendingBalance.balance < this.config.lowBalanceThreshold) {
+        console.log(`⚠️  Low balance detected: ${spendingBalance.balance.toFixed(6)} APT < ${this.config.lowBalanceThreshold} APT`);
+        
+        // Check if we have enough in savings
+        if (savingBalance.balance >= this.config.autoRefillAmount) {
+          console.log(`🔄 Triggering automatic refill of ${this.config.autoRefillAmount} APT...`);
+          await this.performAutoRefill('low_balance');
+        } else {
+          console.log(`❌ Insufficient funds in savings wallet for auto-refill`);
+        }
+      } else {
+        console.log(`✅ Spending balance is healthy: ${spendingBalance.balance.toFixed(6)} APT >= ${this.config.lowBalanceThreshold} APT`);
+      }
+    } catch (error) {
+      console.error('❌ Error checking balance:', error);
+    }
+  }
+
+  /**
+   * Stop balance monitoring
+   */
+  stopBalanceMonitoring(): void {
+    console.log('🛑 Stopping balance monitoring...');
+    // Note: In a real implementation, you'd store the interval ID and clear it
+    // For this demo, we'll just log the stop action
+  }
 } 

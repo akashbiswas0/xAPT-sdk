@@ -20,6 +20,7 @@
     "full-real-demo": "npm run facilitator & npm run server & sleep 5 && npm run real-demo",
     "full-real-blockchain-demo": "npm run facilitator & npm run server & sleep 5 && npm run real-blockchain-demo",
     "full-mock-blockchain-demo": "npm run facilitator & npm run server & sleep 5 && npm run mock-blockchain-demo",
+    "mainnet-demo": "NETWORK=mainnet npm run facilitator & NETWORK=mainnet npm run server & sleep 5 && NETWORK=mainnet npm run real-blockchain-demo",
     "test:watch": "jest --watch"
   },
   "keywords": [
@@ -34,10 +35,11 @@
   "author": "xAPT Team",
   "license": "MIT",
   "dependencies": {
-    "@aptos-labs/ts-sdk": "^1.0.0",
+    "@aptos-labs/ts-sdk": "^1.39.0",
     "@xapt/client": "^1.1.0",
     "@xapt/common": "^1.1.0",
     "@xapt/server": "^1.1.0",
+    "aptos": "^1.21.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.18.0",

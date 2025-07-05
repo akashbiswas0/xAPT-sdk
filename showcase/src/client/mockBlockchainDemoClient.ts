@@ -142,7 +142,7 @@ export class MockBlockchainDemoClient {
    */
   async testEnterpriseEndpoint(): Promise<void> {
     console.log('\n🏢 Testing Enterprise Endpoint with MOCK blockchain payment...');
-    console.log('⚠️  This simulates a REAL 0.5 APT transfer!');
+    console.log('⚠️  This simulates a REAL 0.05 APT transfer!');
     
     try {
       console.log('📈 Accessing enterprise insights...');
@@ -186,8 +186,8 @@ export class MockBlockchainDemoClient {
       // Temporarily set low balance threshold to trigger auto-refill
       const originalConfig = this.smartWallet.getConfig();
       this.smartWallet.updateConfig({
-        lowBalanceThreshold: 0.5, // 0.5 APT
-        autoRefillAmount: 1.5     // 1.5 APT
+        lowBalanceThreshold: 0.05, // 0.05 APT
+        autoRefillAmount: 0.1     // 0.1 APT
       });
 
       console.log('💰 Current spending balance is low, auto-refill should trigger...');
