@@ -1,0 +1,44 @@
+{
+  "name": "xapt",
+  "version": "1.0.0",
+  "description": "xAPT SDK for Aptos Testnet USDC Payments - HTTP 402 Payment Required Integration",
+  "private": false,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "clean": "npm run clean --workspaces",
+    "dev": "npm run dev --workspaces",
+    "prepublishOnly": "npm run clean && npm run build && npm run test",
+    "publish:packages": "npm publish --workspaces --access public"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "aptos",
+    "usdc",
+    "payments",
+    "http402",
+    "blockchain",
+    "sdk",
+    "xapt",
+    "x402"
+  ],
+  "author": "xAPT Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xapt/xapt-sdk.git"
+  }
+}

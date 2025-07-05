@@ -1,0 +1,39 @@
+{
+  "name": "@xapt/common",
+  "version": "1.2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Shared types, constants, and utilities for xAPT SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "xapt",
+    "aptos",
+    "usdc",
+    "payments",
+    "types",
+    "utilities"
+  ],
+  "author": "xAPT Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^29.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  }
+} 

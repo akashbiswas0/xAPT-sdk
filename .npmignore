@@ -1,0 +1,41 @@
+# Development files
+.git/
+.github/
+.vscode/
+.idea/
+*.log
+*.tsbuildinfo
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# Test files
+tests/
+**/*.test.ts
+**/*.spec.ts
+jest.config.js
+
+# Documentation
+docs/
+README.md
+
+# Examples
+examples/
+**/examples/
+
+# Config files
+.eslintrc.js
+.prettierrc
+tsconfig.json
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env* 
