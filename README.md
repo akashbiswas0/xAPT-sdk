@@ -2,6 +2,13 @@
 
 A robust, open-source SDK for instant, automated stablecoin payments directly over HTTP, leveraging the Aptos blockchain with APT tokens. Inspired by  x402 for Aptos, this SDK enables seamless machine-to-machine (M2M) payment flows.
 
+## Name : Akash Biswas
+### Email : akash8860biswas@gmail.com
+
+### Spending account txn : https://explorer.aptoslabs.com/account/0x7cf9db286bac18834b20bb31b34809fe308ac7c8f683e5daa0dfca434e5d8f74?network=mainnet
+
+### Saving account txn : https://explorer.aptoslabs.com/account/0x03aaf1fdf8525602baa4df875a4b76748b8e9fcd4502f2c28cf0d5caf3637a17?network=mainnet
+
 ## 🎯 SDK Description
 
 The xAPT SDK is a comprehensive solution for implementing HTTP 402 "Payment Required" flows on the Aptos blockchain. It provides a complete ecosystem for developers to build applications that require micro-payments for digital resources, API access, or premium content.
