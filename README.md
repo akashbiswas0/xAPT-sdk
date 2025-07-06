@@ -1,6 +1,6 @@
 # x-APT SDK
 
-A robust, open-source SDK for instant, automated stablecoin payments directly over HTTP, leveraging the Aptos blockchain with APT tokens. Inspired by  x402 for Aptos, this SDK enables seamless machine-to-machine (M2M) and human-to-machine (H2M) payment flows.
+A robust, open-source SDK for instant, automated stablecoin payments directly over HTTP, leveraging the Aptos blockchain with APT tokens. Inspired by  x402 for Aptos, this SDK enables seamless machine-to-machine (M2M) payment flows.
 
 ## 🎯 SDK Description
 
