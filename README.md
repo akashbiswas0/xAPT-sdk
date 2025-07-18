@@ -381,17 +381,4 @@ npm run demo:real
 - [Facilitator API Reference](docs/facilitator-api.md) - Payment verification API
 - [Showcase Demo](showcase/README.md) - Real blockchain integration example
 
-## 🤝 Contributing
 
-We welcome contributions! Please see our contributing guidelines for more details.
-
-## 📄 License
-
-MIT License - see LICENSE file for details.
-
-## 🔗 Links
-
-- [Aptos Documentation](https://aptos.dev/)
-- [HTTP 402 Specification](https://httpwg.org/specs/rfc9110.html#status.402)
-- [Aptos Explorer](https://explorer.aptoslabs.com/)
-- [Aptos Labs SDK](https://github.com/aptos-labs/aptos-core) 
